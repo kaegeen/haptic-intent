@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Haptic Intent Grid</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
+
+  <h1 class="text-2xl font-semibold">How do you feel right now?</h1>
+
+  <div id="grid" class="grid grid-cols-3 gap-4">
+    <!-- Grid buttons -->
+    <button data-intent="Focused" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Focused</button>
+    <button data-intent="Curious" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Curious</button>
+    <button data-intent="Distracted" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Distracted</button>
+    <button data-intent="Anxious" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Anxious</button>
+    <button data-intent="Overwhelmed" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Overwhelmed</button>
+    <button data-intent="Peaceful" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Peaceful</button>
+    <button data-intent="Energetic" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Energetic</button>
+    <button data-intent="Tired" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Tired</button>
+    <button data-intent="Creative" class="intent-btn bg-white border rounded p-6 shadow hover:bg-blue-100">Creative</button>
+  </div>
+
+  <div id="log" class="w-full max-w-md mt-6 space-y-2"></div>
+
+  <script>
+    const buttons = document.querySelectorAll('.intent-btn');
+    const log = document.getElementById('log');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const intent = button.getAttribute('data-intent');
+        const entry = {
+          intent,
+          time: new Date().toLocaleTimeString(),
+        };
+
+        let history = JSON.parse(localStorage.getItem('intentHistory') || '[]');
+        history.unshift(entry);
+        localStorage.setItem('intentHistory', JSON.stringify(history.slice(0, 5))); // store last 5
+        renderLog();
+      });
+    });
+
+    function renderLog() {
+      const history = JSON.parse(localStorage.getItem('intentHistory') || '[]');
+      log.innerHTML = '<h2 class="text-lg font-medium">Last Entries</h2>' +
+        history.map(h => `<div class="bg-white p-3 rounded border shadow-sm text-sm">${h.time} — ${h.intent}</div>`).join('');
+    }
+
+    renderLog();
+  </script>
+
+</body>
+</html>
